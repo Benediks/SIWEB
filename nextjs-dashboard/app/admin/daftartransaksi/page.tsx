@@ -4,9 +4,27 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
+// Define TypeScript interfaces for better type safety
+interface TransactionItem {
+  name: string;
+  quantity: number;
+  price: number;
+}
+
+interface Transaction {
+  id: string;
+  date: string;
+  status: string;
+  totalPrice: number;
+  tax: number;
+  productPrice: number;
+  payment: string;
+  items: TransactionItem[];
+}
+
 export default function DaftarTransaksi() {
   // Sample transaction data
-  const [transactions, setTransactions] = useState([
+  const [transactions, setTransactions] = useState<Transaction[]>([
     {
       id: "nfcbde123321",
       date: "Hari ini, 12:00",
@@ -79,11 +97,11 @@ export default function DaftarTransaksi() {
   ]);
 
   // State for selected transaction
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
   // State for modal and new transaction
   const [showModal, setShowModal] = useState(false);
-  const [currentTransaction, setCurrentTransaction] = useState({
+  const [currentTransaction, setCurrentTransaction] = useState<Transaction>({
     id: "",
     date: "",
     status: "Menunggu Pembayaran",
@@ -101,9 +119,11 @@ export default function DaftarTransaksi() {
   });
 
   // Function to select a transaction
-  const handleSelectTransaction = (transactionId) => {
+  const handleSelectTransaction = (transactionId: string) => {
     const transaction = transactions.find(t => t.id === transactionId);
-    setSelectedTransaction(transaction);
+    if (transaction) {
+      setSelectedTransaction(transaction);
+    }
   };
 
   // Function to show add transaction modal
@@ -133,7 +153,7 @@ export default function DaftarTransaksi() {
   };
 
   // Function to handle input changes
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     
     if (name === "productPrice") {
@@ -156,13 +176,13 @@ export default function DaftarTransaksi() {
   };
 
   // Function to handle item changes
-  const handleItemChange = (index, field, value) => {
+  const handleItemChange = (index: number, field: keyof TransactionItem, value: string | number) => {
     const updatedItems = [...currentTransaction.items];
     
     if (field === "price" || field === "quantity") {
       updatedItems[index][field] = Number(value);
     } else {
-      updatedItems[index][field] = value;
+      updatedItems[index][field] = value as string;
     }
     
     // Recalculate product price based on items
@@ -195,7 +215,7 @@ export default function DaftarTransaksi() {
   };
 
   // Function to remove an item
-  const handleRemoveItem = (index) => {
+  const handleRemoveItem = (index: number) => {
     if (currentTransaction.items.length > 1) {
       const updatedItems = currentTransaction.items.filter((_, i) => i !== index);
       
@@ -215,7 +235,7 @@ export default function DaftarTransaksi() {
   };
 
   // Function to save transaction
-  const handleSaveTransaction = (e) => {
+  const handleSaveTransaction = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setTransactions([...transactions, currentTransaction]);
     setShowModal(false);

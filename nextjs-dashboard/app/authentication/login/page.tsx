@@ -12,7 +12,8 @@ export default function Login() {
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleSubmit = (e) => {
+  // Fix: Add proper type for the event parameter
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     // Reset error message

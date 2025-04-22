@@ -4,9 +4,19 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
+// Define TypeScript interfaces for better type safety
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  stock: number;
+  description: string;
+  image: string;
+}
+
 export default function DaftarProduk() {
   // Data produk contoh
-  const [products, setProducts] = useState([
+  const [products, setProducts] = useState<Product[]>([
     {
       id: 1,
       name: 'TDR-3000',
@@ -36,8 +46,8 @@ export default function DaftarProduk() {
   // State untuk modal tambah/edit produk
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState({
-    id: null,
+  const [currentProduct, setCurrentProduct] = useState<Product>({
+    id: 0,
     name: '',
     price: 0,
     stock: 0,
@@ -49,7 +59,7 @@ export default function DaftarProduk() {
   const handleAddProduct = () => {
     setEditMode(false);
     setCurrentProduct({
-      id: null,
+      id: 0,
       name: '',
       price: 0,
       stock: 0,
@@ -60,21 +70,21 @@ export default function DaftarProduk() {
   };
 
   // Fungsi untuk menampilkan modal edit produk
-  const handleEditProduct = (product:any) => {
+  const handleEditProduct = (product: Product) => {
     setEditMode(true);
     setCurrentProduct(product);
     setShowModal(true);
   };
 
   // Fungsi untuk menghapus produk
-  const handleDeleteProduct = (id:any) => {
+  const handleDeleteProduct = (id: number) => {
     if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
       setProducts(products.filter(product => product.id !== id));
     }
   };
 
   // Fungsi untuk menyimpan produk (baik tambah maupun edit)
-  const handleSaveProduct = (e:any) => {
+  const handleSaveProduct = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
     if (editMode) {
@@ -95,7 +105,7 @@ export default function DaftarProduk() {
   };
 
   // Fungsi untuk mengubah nilai input form
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setCurrentProduct({
       ...currentProduct,
@@ -277,7 +287,7 @@ export default function DaftarProduk() {
                   value={currentProduct.description}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  rows="3"
+                  rows={3}
                   required
                 ></textarea>
               </div>

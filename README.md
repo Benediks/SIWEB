@@ -1,3 +1,9 @@
+## Next.js App Router Course - Starter
+
+This is the starter template for the Next.js App Router Course. It contains the starting code for the dashboard application.
+
+For more information, see the [course curriculum](https://nextjs.org/learn) on the Next.js Website.
+
 Acharius maximilanus sumeisey 231712359 Benediktus Geraldi 231712681 Sandi Witjaksono Tiranda 231712680
 
 Proyek CE4L merupakan sebuah layanan jasa dan produk yang berfokus pada energi terbarukan terutama solar panel. Kegiatan ini bertujuan untuk menjadi lebih dari sekadar bisnis, tetapi menjadi agen perubahan yang memfasilitasi transisi menuju penggunaan energi terbarukan dan ramah lingkungan.

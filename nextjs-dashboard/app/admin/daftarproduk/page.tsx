@@ -60,21 +60,21 @@ export default function DaftarProduk() {
   };
 
   // Fungsi untuk menampilkan modal edit produk
-  const handleEditProduct = (product) => {
+  const handleEditProduct = (product:any) => {
     setEditMode(true);
     setCurrentProduct(product);
     setShowModal(true);
   };
 
   // Fungsi untuk menghapus produk
-  const handleDeleteProduct = (id) => {
+  const handleDeleteProduct = (id:any) => {
     if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
       setProducts(products.filter(product => product.id !== id));
     }
   };
 
   // Fungsi untuk menyimpan produk (baik tambah maupun edit)
-  const handleSaveProduct = (e) => {
+  const handleSaveProduct = (e:any) => {
     e.preventDefault();
     
     if (editMode) {

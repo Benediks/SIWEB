@@ -1,70 +1,45 @@
 "use client";
-
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
-
+import { products as placeholderProducts } from '@/lib/placeholder-data'; // Importing the placeholder data
 // Define TypeScript interfaces for better type safety
 interface Product {
-  id: number;
-  name: string;
-  price: number;
+  id_produk: string; // Unique identifier
+  nama_produk: string;
+  harga: number;
   stock: number;
-  description: string;
+  deskripsi: string;
   image: string;
 }
-
 export default function DaftarProduk() {
-  // Data produk contoh
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: 1,
-      name: 'TDR-3000',
-      price: 800000.00,
-      stock: 129,
-      description: 'Ditempa dan dirakit oleh kuli Ngawi dengan penuh cinta',
-      image: '/images/product.png'
-    },
-    {
-      id: 2,
-      name: 'TDR-3000',
-      price: 800000.00,
-      stock: 129,
-      description: 'Ditempa dan dirakit oleh kuli Ngawi dengan penuh cinta',
-      image: '/images/product.png'
-    },
-    {
-      id: 3,
-      name: 'TDR-3000',
-      price: 800000.00,
-      stock: 129,
-      description: 'Ditempa dan dirakit oleh kuli Ngawi dengan penuh cinta',
-      image: '/images/product.png'
-    }
-  ]);
+  // Use the imported placeholder data
+  const [products, setProducts] = useState<Product[]>(placeholderProducts);
 
-  // State untuk modal tambah/edit produk
   const [showModal, setShowModal] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<Product>({
-    id: 0,
-    name: '',
-    price: 0,
+    id_produk: "",
+    nama_produk: "",
+    harga: 0,
     stock: 0,
-    description: '',
-    image: ''
+    deskripsi: "",
+    image: ""
   });
+
+  // State for selected product detail view
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // Fungsi untuk menampilkan modal tambah produk
   const handleAddProduct = () => {
     setEditMode(false);
     setCurrentProduct({
-      id: 0,
-      name: '',
-      price: 0,
+      id_produk: "",
+      nama_produk: "",
+      harga: 0,
       stock: 0,
-      description: '',
-      image: ''
+      deskripsi: "",
+      image: ""
     });
     setShowModal(true);
   };
@@ -77,9 +52,12 @@ export default function DaftarProduk() {
   };
 
   // Fungsi untuk menghapus produk
-  const handleDeleteProduct = (id: number) => {
+  const handleDeleteProduct = (id_produk: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-      setProducts(products.filter(product => product.id !== id));
+      setProducts(products.filter(product => product.id_produk !== id_produk));
+      if (selectedProduct && selectedProduct.id_produk === id_produk) {
+        setSelectedProduct(null);
+      }
     }
   };
 
@@ -90,13 +68,18 @@ export default function DaftarProduk() {
     if (editMode) {
       // Update produk yang sudah ada
       setProducts(products.map(product => 
-        product.id === currentProduct.id ? currentProduct : product
+        product.id_produk === currentProduct.id_produk ? currentProduct : product
       ));
+      
+      // Update selected product if it's being edited
+      if (selectedProduct && selectedProduct.id_produk === currentProduct.id_produk) {
+        setSelectedProduct(currentProduct);
+      }
     } else {
       // Tambah produk baru
       const newProduct = {
         ...currentProduct,
-        id: products.length + 1
+        id_produk: `p000${products.length + 1}` // Generate new id_produk
       };
       setProducts([...products, newProduct]);
     }
@@ -109,8 +92,13 @@ export default function DaftarProduk() {
     const { name, value } = e.target;
     setCurrentProduct({
       ...currentProduct,
-      [name]: name === 'price' || name === 'stock' ? Number(value) : value
+      [name]: name === 'harga' || name === 'stock' ? Number(value) : value
     });
+  };
+
+  // Handle click on a product row to show details
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
   };
 
   return (
@@ -170,43 +158,89 @@ export default function DaftarProduk() {
             </button>
           </div>
 
-          {/* Product List */}
-          <div className="space-y-4">
-            {products.map((product) => (
-              <div key={product.id} className="bg-gray-200 p-4 rounded shadow-sm flex">
-                <div className="w-32 h-32 bg-white p-2">
-                  <Image src={product.image} alt={product.name} width={120} height={120} />
+          {/* Product List and Details */}
+          <div className="flex space-x-6">
+            {/* Products List */}
+            <div className="w-1/2">
+              <div className="bg-white p-4 rounded shadow-sm mb-6">
+                <div className="flex justify-between mb-4 text-gray-700 font-medium">
+                  <div className="w-1/3">id_produk</div>
+                  <div className="w-1/3">nama_produk</div>
+                  <div className="w-1/3 text-right">Harga (Rp)</div>
                 </div>
-                <div className="ml-4 flex-1">
-                  <div className="flex justify-between">
-                    <h2 className="text-xl font-semibold">{product.name}</h2>
-                    <div className="flex space-x-2">
-                      <button 
-                        onClick={() => handleEditProduct(product)}
-                        className="text-gray-600 hover:text-gray-800"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                        </svg>
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteProduct(product.id)}
-                        className="text-gray-600 hover:text-gray-800"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
+                {products.map((product) => (
+                  <div 
+                    key={product.id_produk} 
+                    className={`flex justify-between items-center p-3 rounded cursor-pointer mb-2 ${selectedProduct?.id_produk === product.id_produk ? 'bg-gray-200' : 'bg-gray-100 hover:bg-gray-200'}`}
+                    onClick={() => handleProductClick(product)}
+                  >
+                    <div className="w-1/3">{product.id_produk}</div>
+                    <div className="w-1/3">{product.nama_produk}</div>
+                    <div className="w-1/3 text-right">{product.harga.toLocaleString('id-ID')}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Product Detail */}
+            <div className="w-1/2">
+              {selectedProduct ? (
+                <div className="bg-white p-4 rounded shadow-sm">
+                  <h2 className="text-xl font-semibold mb-4">Detail Produk</h2>
+                  <div className="flex justify-center mb-4">
+                    <Image 
+                      src={selectedProduct.image || "/images/product.png"} 
+                      alt={selectedProduct.nama_produk} 
+                      width={200} 
+                      height={200} 
+                      className="border border-gray-200"
+                    />
+                  </div>
+                  <div className="border-b pb-4 mb-4">
+                    <div className="grid grid-cols-2 gap-y-4">
+                      <div>
+                        <p className="text-sm text-gray-500">id_produk</p>
+                        <p>{selectedProduct.id_produk}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">nama_produk</p>
+                        <p>{selectedProduct.nama_produk}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">harga (Rp)</p>
+                        <p>{selectedProduct.harga.toLocaleString('id-ID')}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm text-gray-500">stok</p>
+                        <p>{selectedProduct.stock}</p>
+                      </div>
                     </div>
                   </div>
-                  <p className="text-gray-700 mt-1">Rp {product.price.toLocaleString('id-ID')}</p>
-                  <div className="flex mt-3 text-sm">
-                    <p className="mr-4"><span className="font-medium">Stock:</span> {product.stock}</p>
-                    <p><span className="font-medium">Deskripsi:</span> {product.description}</p>
+                  <div className="mb-6">
+                    <p className="text-sm text-gray-500">deskripsi</p>
+                    <p className="mt-1">{selectedProduct.deskripsi}</p>
+                  </div>
+                  <div className="flex justify-end space-x-2">
+                    <button
+                      onClick={() => handleEditProduct(selectedProduct)}
+                      className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteProduct(selectedProduct.id_produk)}
+                      className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                      Hapus
+                    </button>
                   </div>
                 </div>
-              </div>
-            ))}
+              ) : (
+                <div className="bg-white p-4 rounded shadow-sm h-32 flex items-center justify-center text-gray-500">
+                  Pilih produk untuk melihat detail
+                </div>
+              )}
+            </div>
           </div>
         </main>
 
@@ -219,7 +253,7 @@ export default function DaftarProduk() {
       {/* Modal for Add/Edit Product */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-1/2">
+          <div className="bg-white p-6 rounded-lg w-2/3">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">{editMode ? 'Edit Produk' : 'Tambah Produk'}</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-gray-700">
@@ -231,14 +265,14 @@ export default function DaftarProduk() {
             
             <form onSubmit={handleSaveProduct}>
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="nama_produk">
                   Nama Produk
                 </label>
                 <input
                   type="text"
-                  id="name"
-                  name="name"
-                  value={currentProduct.name}
+                  id="nama_produk"
+                  name="nama_produk"
+                  value={currentProduct.nama_produk}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   required
@@ -247,14 +281,14 @@ export default function DaftarProduk() {
               
               <div className="mb-4 grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="price">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="harga">
                     Harga (Rp)
                   </label>
                   <input
                     type="number"
-                    id="price"
-                    name="price"
-                    value={currentProduct.price}
+                    id="harga"
+                    name="harga"
+                    value={currentProduct.harga}
                     onChange={handleInputChange}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                     required
@@ -278,13 +312,13 @@ export default function DaftarProduk() {
               </div>
               
               <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
+                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="deskripsi">
                   Deskripsi
                 </label>
                 <textarea
-                  id="description"
-                  name="description"
-                  value={currentProduct.description}
+                  id="deskripsi"
+                  name="deskripsi"
+                  value={currentProduct.deskripsi}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   rows={3}

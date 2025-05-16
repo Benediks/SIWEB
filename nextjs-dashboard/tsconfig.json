@@ -30,6 +30,6 @@
     ".next/types/**/*.ts",
     "app/lib/placeholder-data.ts",
     "scripts/seed.js"
-  ],
+, "lib/placeholder-data.js", "app/admin/dashboard/page.js", "app/admin/daftarproduk/page.js", "app/admin/daftartransaksi/page.js"  ],
   "exclude": ["node_modules"]
 }

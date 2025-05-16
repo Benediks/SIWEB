@@ -1,4 +1,6 @@
-export const products = [
+// Converted from placeholder-data.ts for database seeding
+
+const products = [
   {
     id_produk: "p0001",
     nama_produk: "TDR-3000",
@@ -46,14 +48,15 @@ export const products = [
   },
 ];
 
-export const transactions = [
+// Convert dates to JS Date objects for database compatibility
+const transactions = [
   {
     id_transaksi: "t0001",
     id_produk: "p0001",
     nama_pembeli: "David Coggins",
     tanggal: new Date("2025-01-01"),
     jumlah: 1,
-    total_harga: 800000.00,
+    total_harga: 800000,
   },
   {
     id_transaksi: "t0002",
@@ -61,7 +64,7 @@ export const transactions = [
     nama_pembeli: "Kevin Andreana", 
     tanggal: new Date("2025-01-02"),
     jumlah: 2,
-    total_harga: 200000.00,
+    total_harga: 200000,
   },
   {
     id_transaksi: "t0003",
@@ -69,7 +72,7 @@ export const transactions = [
     nama_pembeli: "Miselia Ikwan",
     tanggal: new Date("2025-01-03"),
     jumlah: 3,
-    total_harga: 2700000.00,
+    total_harga: 2700000,
   },
   {
     id_transaksi: "t0004",
@@ -77,7 +80,7 @@ export const transactions = [
     nama_pembeli: "Owi",
     tanggal: new Date("2025-01-04"),
     jumlah: 1,
-    total_harga: 50000.00,
+    total_harga: 50000,
   },
   {
     id_transaksi: "t0005",
@@ -85,6 +88,11 @@ export const transactions = [
     nama_pembeli: "Owo",
     tanggal: new Date("2025-01-05"),
     jumlah: 4,
-    total_harga: 400000.00,
+    total_harga: 400000,
   }
 ];
+
+module.exports = {
+  products,
+  transactions
+};

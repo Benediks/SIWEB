@@ -1,24 +1,10 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { products, transactions } from '@/lib/placeholder-data'; // Importing products and transactions
+import { fetchDashboardData } from '@/lib/db';
 
-export default function Dashboard() {
-  // Calculate total products
-  const totalProducts = products.length;
-
-  // Calculate total transactions
-  const totalTransactions = transactions.length;
-
-  // Calculate total revenue
-  const totalRevenue = transactions.reduce((acc, transaction) => acc + transaction.total_harga, 0);
-
-  // Find the product with the highest sales
-  const productSales = products.map(product => ({
-    ...product,
-    totalSales: product.sales
-  }));
-
-  const bestSellingProduct = productSales.reduce((prev, current) => (prev.totalSales > current.totalSales) ? prev : current);
+export default async function Dashboard() {
+  // Fetch dashboard data from the database
+  const { totalProducts, totalTransactions, totalRevenue, bestSellingProduct } = await fetchDashboardData();
 
   return (
     <div className="flex min-h-screen">
@@ -93,18 +79,20 @@ export default function Dashboard() {
           </div>
 
           {/* Best Selling Product Card */}
-          <div className="bg-gray-200 p-6 rounded shadow mb-6">
-            <h2 className="text-xl font-semibold mb-4">Produk Terlaris</h2>
-            <div className="flex justify-between">
-              <div>
-                <p className="text-lg font-bold">{bestSellingProduct.nama_produk}</p>
-                <p className="text-sm text-gray-500">Total Penjualan: {bestSellingProduct.sales}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-lg font-bold">Rp {bestSellingProduct.harga.toLocaleString('id-ID')}</p>
+          {bestSellingProduct && (
+            <div className="bg-gray-200 p-6 rounded shadow mb-6">
+              <h2 className="text-xl font-semibold mb-4">Produk Terlaris</h2>
+              <div className="flex justify-between">
+                <div>
+                  <p className="text-lg font-bold">{bestSellingProduct.nama_produk}</p>
+                  <p className="text-sm text-gray-500">Total Penjualan: {bestSellingProduct.total_sales}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-bold">Rp {bestSellingProduct.harga.toLocaleString('id-ID')}</p>
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </main>
 
         {/* Footer */}

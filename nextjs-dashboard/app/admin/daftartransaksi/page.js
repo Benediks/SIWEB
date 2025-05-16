@@ -66,26 +66,6 @@ export default function DaftarTransaksi() {
     });
   };
 
-
-// Option 1: Modify the getStatusBadgeClass function to handle undefined status
-const getStatusBadgeClass = (status) => {
-  // Add null check for status - return default styling
-  if (!status) {
-    return 'bg-gray-100 text-gray-800';
-  }
-  
-  switch(status.toLowerCase()) {
-    case 'pending':
-      return 'bg-yellow-100 text-yellow-800';
-    case 'completed':
-      return 'bg-green-100 text-green-800';
-    case 'cancelled':
-      return 'bg-red-100 text-red-800';
-    default:
-      return 'bg-gray-100 text-gray-800';
-  }
-};
-
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
@@ -144,10 +124,10 @@ const getStatusBadgeClass = (status) => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product ID</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
@@ -157,6 +137,9 @@ const getStatusBadgeClass = (status) => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {transaction.id_transaksi}
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {transaction.id_produk}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-500">{transaction.nama_pembeli}</div>
                       </td>
@@ -165,11 +148,6 @@ const getStatusBadgeClass = (status) => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         Rp {transaction.total_harga.toLocaleString('id-ID')}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getStatusBadgeClass(transaction.status)}`}>
-                          {transaction.status}
-                        </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button

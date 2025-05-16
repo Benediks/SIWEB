@@ -1,4 +1,4 @@
-const { db } = require('@vercel/postgres');
+const { db } = require('postgres');
 const { products, transactions } = require('../lib/placeholder-data.js');
 
 async function seedProducts(client) {

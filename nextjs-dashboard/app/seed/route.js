@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sql } from '@vercel/postgres';
+import { sql } from 'postgres';
 import { products, transactions } from '@/lib/placeholder-data.js';
 
 export async function GET(request) {

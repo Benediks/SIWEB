@@ -1,4 +1,4 @@
-import { sql } from '@vercel/postgres';
+import { sql } from 'postgres'
 
 export async function fetchAllProducts() {
   try {
